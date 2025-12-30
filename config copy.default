@@ -1,0 +1,11 @@
+telegram:
+  channels:
+    -
+
+stocks:
+  US:
+    - name:
+      code:
+  KR:
+    - name:
+      code:

@@ -173,3 +173,6 @@ my_session.session*
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
+
+# files
+config.yaml
