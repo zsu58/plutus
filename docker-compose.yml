@@ -1,0 +1,29 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: plutus_db
+    restart: always
+    # CDC Configuration:
+    # - binlog-row-image=FULL: Logs all columns (safest for Flink)
+    # - gtid-mode=ON: Recommended for modern replication/CDC
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --server-id=1
+      --log-bin=mysql-bin
+      --binlog-format=ROW
+      --binlog-row-image=FULL
+      --gtid-mode=ON
+      --enforce-gtid-consistency=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: plutus
+      MYSQL_USER: plutus
+      MYSQL_PASSWORD: plutus
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

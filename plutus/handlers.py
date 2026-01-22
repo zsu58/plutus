@@ -1,4 +1,4 @@
-from plutus import settings
+from plutus import settings, database, models
 
 
 async def message_handler(event):
@@ -12,9 +12,32 @@ async def message_handler(event):
 
     # You can access settings.CONFIG here if needed in the future
     # e.g., allowed_channels = settings.CONFIG.get('telegram', {}).get('channels', [])
+    # TODO: filter the messages using CONFIG and renotify the user about the interested stocks
 
     # Print the message to the console
-    # TODO: filter
-    # TODO: save to DB
     print(f"[{chat_title}] @{username}")
     print(event.text)
+
+    # Save to DB
+    save_message(chat, chat_title, sender, username, event.text)
+
+    #
+
+
+def save_message(chat, chat_title, sender, username, text):
+    db = database.SessionLocal()
+    try:
+        new_message = models.Message(
+            chat_id=chat.id if chat else None,
+            chat_title=chat_title,
+            sender_id=sender.id if sender else None,
+            sender_username=username,
+            text=text,
+        )
+        db.add(new_message)
+        db.commit()
+    except Exception as e:
+        print(f"Error saving to DB: {e}")
+        db.rollback()
+    finally:
+        db.close()
