@@ -25,5 +25,31 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 60s
+      timeout: 5s
+      retries: 5
+  app:
+    # build: .
+    image: plutus-app
+    container_name: plutus_app
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    # Pass environment variables from your local .env file
+    env_file:
+      - .env
+    # Override DB_HOST to point to the container name 'db' instead of 'localhost'
+    environment:
+      - DB_HOST=db
+    # Mount config.yaml so you can edit it without rebuilding
+    volumes:
+      - .:/app
+    #   - ./config.yaml:/app/config.yaml
+    #   - ./my_session.session:/app/my_session.session
+
+
 volumes:
   db_data:
