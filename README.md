@@ -31,16 +31,36 @@ pip install -r requirements.txt
 4. Build the Docker image
 
 ```bash
-docker build -f docker/Dockerfile -t plutus-app .
+docker build -f docker/Dockerfile.plutus -t plutus-app .
+docker build -f docker/Dockerfile.flink -t flink .
 ```
 
 ### 3. Run
 
+```bash
+docker network create \
+  --driver bridge \
+  data-net
+```
+
 
 ```bash
-docker-compose up -d
+docker-compose -f docker-compose.plutus.yml up
 
 # Client is starting... (Check terminal for login instructions if first time)
 # Please enter your phone (or bot token): +821012345678
 # Please enter the code you received: {message_code from telegram}
+
+# not working
+# docker-compose -f docker-compose.ceph.yml up
+
+docker-compose -f docker-compose.minio.yml up
+# create a bucket http://localhost:9000
+
+docker-compose -f docker-compose.flink.yml up
 ```
+
+* Flink UI: http://localhost:8081/#/overview
+* MySQL: http://localhost:3306
+* Python App: http://localhost:8000
+* Minio: http://localhost:9000

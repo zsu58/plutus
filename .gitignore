@@ -176,3 +176,6 @@ my_session.session*
 
 # files
 config.yaml
+
+# ceph
+# ceph_data/

@@ -1,0 +1,141 @@
+# version: "3"
+
+# networks:
+#   # Internal network for Ceph (Strict subnet required)
+#   ceph-net:
+#     driver: bridge
+#     ipam:
+#       config:
+#         # - subnet: 172.30.0.0/16
+#         - subnet: 172.25.0.0/16
+#   # External network for your apps
+#   data-net:
+#     external: true
+
+# services:
+
+#   mon:
+#     image: ceph/daemon:v3.2.15-stable-3.2-mimic-centos-7
+#     command: "mon"
+#     hostname: "ceph-mon"
+#     environment:
+#       # MON_IP: 172.30.0.10
+#       MON_IP: 172.25.0.10
+#       CEPH_PUBLIC_NETWORK: 172.25.0.0/16
+#       LANG: en_US.utf8
+#       TZ: UTC
+#     volumes:
+#       - ./ceph_data/ceph:/etc/ceph
+#       - ./ceph_data/lib/:/var/lib/ceph/
+#     networks:
+#       ceph-net:
+#         ipv4_address: 172.25.0.10
+#       data-net: {} # Allow apps to talk to mon if needed
+
+#   mgr:
+#     image: ceph/daemon:v3.2.15-stable-3.2-mimic-centos-7
+#     command: "mgr"
+#     environment:
+#       LANG: en_US.utf8
+#       TZ: UTC
+#     volumes:
+#       - ./ceph_data/ceph:/etc/ceph
+#       - ./ceph_data/lib/:/var/lib/ceph/
+#     depends_on:
+#       - mon
+#     ports:
+#       - 8443:8443
+#     networks:
+#       - ceph-net
+#       - data-net # Optional: for accessing the dashboard
+
+#   osd1:
+#     pid: host
+#     privileged: true
+#     image: ceph/daemon:v3.2.15-stable-3.2-mimic-centos-7
+#     # command: "osd_directory"
+#     command: ["osd_directory", "--osd-max-object-name-len=256", "--osd-max-object-namespace-len=64"]
+#     environment:
+#       LANG: en_US.utf8
+#       TZ: UTC
+#     volumes:
+#       - ./ceph_data/ceph:/etc/ceph
+#       - ./ceph_data/lib/:/var/lib/ceph/
+#       - ./ceph_data/osd/osd1:/var/lib/ceph/osd
+#     depends_on:
+#       - mon
+#     networks:
+#       - ceph-net
+
+#   osd2:
+#     pid: host
+#     privileged: true
+#     image: ceph/daemon:v3.2.15-stable-3.2-mimic-centos-7
+#     # command: "osd_directory"
+#     command: ["osd_directory", "--osd-max-object-name-len=256", "--osd-max-object-namespace-len=64"]
+#     environment:
+#       LANG: en_US.utf8
+#       TZ: UTC
+#     volumes:
+#       - ./ceph_data/ceph:/etc/ceph
+#       - ./ceph_data/lib/:/var/lib/ceph/
+#       - ./ceph_data/osd/osd2:/var/lib/ceph/osd
+#     depends_on:
+#       - mon
+#     networks:
+#       - ceph-net
+
+#   osd3:
+#     pid: host
+#     privileged: true
+#     image: ceph/daemon:v3.2.15-stable-3.2-mimic-centos-7
+#     # command: "osd_directory"
+#     command: ["osd_directory", "--osd-max-object-name-len=256", "--osd-max-object-namespace-len=64"]
+#     environment:
+#       LANG: en_US.utf8
+#       TZ: UTC
+#     volumes:
+#       - ./ceph_data/ceph:/etc/ceph
+#       - ./ceph_data/lib/:/var/lib/ceph/
+#       - ./ceph_data/osd/osd3:/var/lib/ceph/osd
+#     depends_on:
+#       - mon
+#     networks:
+#       - ceph-net
+
+#   rgw:
+#     image: ceph/daemon:v3.2.15-stable-3.2-mimic-centos-7
+#     command: "rgw"
+#     environment:
+#       LANG: en_US.utf8
+#       TZ: UTC
+#     volumes:
+#       - ./ceph_data/ceph:/etc/ceph
+#       - ./ceph_data/lib/:/var/lib/ceph/
+#     depends_on:
+#       - osd1
+#       - osd2
+#       - osd3
+#     ports:
+#       - 7480:7480
+#     networks:
+#       - ceph-net
+#       - data-net # Critical: Allows Flink/Plutus to reach S3
+
+#   mds:
+#     image: ceph/daemon:v3.2.15-stable-3.2-mimic-centos-7
+#     command: "mds"
+#     hostname: "ceph-mds-host"
+#     environment:
+#       CEPHFS_CREATE: 1
+#       LANG: en_US.utf8
+#       TZ: UTC
+#     volumes:
+#       - ./ceph_data/ceph:/etc/ceph
+#       - ./ceph_data/lib/:/var/lib/ceph/
+#     depends_on:
+#       - osd1
+#       - osd2
+#       - osd3
+#     networks:
+#       - ceph-net
