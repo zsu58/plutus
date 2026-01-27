@@ -2,7 +2,8 @@ FROM flink:1.20.3-scala_2.12-java17
 
 ARG FLINK_VERSION=1.20
 ARG FLINK_VERSION_FULL=1.20.3
-ARG MYSQL_CDC_VERSION=3.5.0
+# ARG MYSQL_CDC_VERSION=3.5.0
+ARG MYSQL_CDC_VERSION=3.4.0
 ARG JDBC_VERSION=3.3.0-1.20
 ARG MYSQL_DRIVER_VERSION=8.0.27
 ARG ICEBERG_VERSION=1.10.1
@@ -10,13 +11,15 @@ ARG ICEBERG_VERSION=1.10.1
 RUN set -eux; \
     # MySQL CDC Connector
     curl -L -o /opt/flink/lib/flink-sql-connector-mysql-cdc-${MYSQL_CDC_VERSION}.jar \
-    https://repo1.maven.org/maven2/org/apache/flink/flink-connector-mysql-cdc/${MYSQL_CDC_VERSION}/flink-connector-mysql-cdc-${MYSQL_CDC_VERSION}.jar; \
+    https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-mysql-cdc/${MYSQL_CDC_VERSION}/flink-sql-connector-mysql-cdc-${MYSQL_CDC_VERSION}.jar; \
     # JDBC Connector
     curl -L -o /opt/flink/lib/flink-connector-jdbc-${JDBC_VERSION}.jar \
     https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/${JDBC_VERSION}/flink-connector-jdbc-${JDBC_VERSION}.jar; \
     # MySQL JDBC Driver
-    curl -L -o /opt/flink/lib/mysql-connector-j-${MYSQL_DRIVER_VERSION}.jar \
-    https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/${MYSQL_DRIVER_VERSION}/mysql-connector-j-${MYSQL_DRIVER_VERSION}.jar \
+    # curl -L -o /opt/flink/lib/mysql-connector-j-${MYSQL_DRIVER_VERSION}.jar \
+    # https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/${MYSQL_DRIVER_VERSION}/mysql-connector-j-${MYSQL_DRIVER_VERSION}.jar \
+    curl -L -o /opt/flink/lib/mysql-connector-java-${MYSQL_DRIVER_VERSION}.jar \
+    https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_DRIVER_VERSION}/mysql-connector-java-${MYSQL_DRIVER_VERSION}.jar \
     # iceberg
     curl -L -o /opt/flink/lib/iceberg-flink-runtime-${FLINK_VERSION}-${ICEBERG_VERSION}.jar \
     https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-flink-runtime-${FLINK_VERSION}/${ICEBERG_VERSION}/iceberg-flink-runtime-${FLINK_VERSION}-${ICEBERG_VERSION}.jar \

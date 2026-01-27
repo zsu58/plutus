@@ -64,3 +64,66 @@ docker-compose -f docker-compose.flink.yml up
 * MySQL: http://localhost:3306
 * Python App: http://localhost:8000
 * Minio: http://localhost:9000
+
+
+### 4. Quick Start
+
+Grant Privileges to plutus
+
+```bash
+docker container exec -it plutus_db bash
+
+mysql -u root -p
+# password: rootpassword
+```
+
+```sql
+-- before mysql 8.0
+GRANT SELECT, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'plutus' IDENTIFIED BY 'plutus';
+FLUSH PRIVILEGES;
+
+-- after mysql 8.0
+GRANT SELECT, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'plutus'@'%';
+FLUSH PRIVILEGES;
+```
+
+Flink
+
+```bash
+docker container exec -it jobmanager bash
+
+./bin/sql-client.sh
+```
+
+```sql
+-- 1. Enable Checkpointing (CRITICAL for Iceberg commits)
+set 'execution.checkpointing.interval'
+= '3s'
+;
+
+show databases
+;
+
+CREATE TABLE messages (
+    id int,
+    chat_id int,
+    chat_title string,
+    sender_id string,
+    sender_username string,
+    text string,
+    `timestamp` TIMESTAMP(0),
+    PRIMARY KEY (id) NOT ENFORCED
+) WITH (
+    'connector' = 'mysql-cdc',
+    'hostname' = 'plutus_db',
+    'port' = '3306',
+    'username' = 'plutus',
+    'password' = 'plutus',
+    'database-name' = 'plutus',
+    'table-name' = 'messages'
+);
+
+select *
+from messages
+;
+```
