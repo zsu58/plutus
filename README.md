@@ -127,6 +127,8 @@ create table messages (
     'password' = 'plutus',
     'database-name' = 'plutus',
     'table-name' = 'messages'
+    -- ,
+    -- 'server-time-zone' = 'utc'
 );
 
 -- 3. Select Data from MySQL
@@ -141,13 +143,28 @@ from messages
 create catalog iceberg with (
     'type' = 'iceberg',
     'catalog-type' = 'hadoop',
-    'warehouse' = 's3a://data-bucket/warehouse',
-    'fs.s3a.endpoint' = 'http://nginx:9000',
-    'fs.s3a.access.key' = 'minioadmin',
-    'fs.s3a.secret.key' = 'minioadmin',
-    'fs.s3a.path.style.access' = 'true'
+    'warehouse' = 's3a://data-bucket/warehouse'
 );
 
--- -- 2. Create Namespace(Database) in MinIO
--- create database if not exists iceberg.dl;
+-- 2. Create Namespace(Database) in MinIO
+create database if not exists iceberg.dl;
+
+-- 3. Create the Iceberg Sink Table
+create table if not exists iceberg.dl.messages (
+    id int,
+    chat_id int,
+    chat_title string,
+    sender_id string,
+    sender_username string,
+    text string,
+    `timestamp` timestamp(0),
+    primary key (id) not enforced
+);
+
+-- 4. Submit the Streaming Job
+insert into iceberg.dl.messages
+select * from messages;
+
+-- 5. Select Table
+select * from iceberg.dl.messages;
 ```

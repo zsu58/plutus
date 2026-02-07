@@ -6,6 +6,7 @@ services:
     image: flink
     container_name: jobmanager
     environment:
+      - HADOOP_CONF_DIR=/opt/flink/conf
       - |
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
@@ -16,12 +17,15 @@ services:
       - "8081:8081"
     command: jobmanager
     volumes:
-      - ./jobs/job.sql:/opt/flink/job.sql
-
+      - ./flink/jobs:/opt/flink/jobs
+      - ./flink/conf/core-site.xml:/opt/flink/conf/core-site.xml
+    networks:
+      - data-net
   taskmanager:
     # build: .
     image: flink
     environment:
+      - HADOOP_CONF_DIR=/opt/flink/conf
       - |
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
@@ -33,6 +37,10 @@ services:
     command: taskmanager
     deploy:
           replicas: 2
+    volumes:
+      - ./flink/conf/core-site.xml:/opt/flink/conf/core-site.xml
+    networks:
+      - data-net
 
 networks:
   data-net:

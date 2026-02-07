@@ -32,6 +32,8 @@ services:
       interval: 60s
       timeout: 5s
       retries: 5
+    networks:
+      data-net:
   app:
     # build: .
     image: plutus-app
