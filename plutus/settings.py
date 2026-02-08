@@ -20,7 +20,7 @@ DB_NAME = os.getenv("DB_NAME", "plutus")
 
 DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-#  Load YAML Config
+# Load YAML Config
 CONFIG_PATH = os.path.join(BASE_DIR, "config.yaml")
 if not os.path.exists(CONFIG_PATH):
     CONFIG = {}
