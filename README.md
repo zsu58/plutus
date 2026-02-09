@@ -43,13 +43,18 @@ docker network create \
   data-net
 ```
 
-
 ```bash
-docker-compose -f docker-compose.plutus.yml up
-
+# authorization(run only on the very first time)
+python3 -m plutus.main --init
 # Client is starting... (Check terminal for login instructions if first time)
 # Please enter your phone (or bot token): +821012345678
 # Please enter the code you received: {message_code from telegram}
+
+# If any problems pursue, remove my_session.session file and restart the process
+```
+
+```bash
+docker-compose -f docker-compose.plutus.yml up
 
 # not working
 # docker-compose -f docker-compose.ceph.yml up
@@ -167,4 +172,33 @@ select * from messages;
 
 -- 5. Select Table
 select * from iceberg.dl.messages;
+```
+
+## Troubleshooting
+
+### Authorization Problems
+
+#### Public Key Retrieval Error in DBeaver
+
+If you encounter a "Public Key Retrieval is not allowed" error in DBeaver:
+
+1. Click on the connection and right-click
+2. Select "Edit Connection"
+3. Go to the "Driver properties" tab
+4. Set `allowPublicKeyRetrieval` to `TRUE`
+
+### Privilege Problems
+
+If you encounter privilege issues with the database user(plutus), run the following SQL commands as root
+
+```bash
+docker container exec -it plutus_db bash
+
+mysql -u root -p
+# password: rootpassword
+```
+
+```sql
+GRANT ALL PRIVILEGES ON PLUTUS.* TO 'plutus'@'%';
+FLUSH PRIVILEGES;
 ```
