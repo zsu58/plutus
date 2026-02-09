@@ -34,6 +34,7 @@ services:
       retries: 5
     networks:
       data-net:
+
   app:
     # build: .
     image: plutus-app
@@ -53,6 +54,8 @@ services:
       - .:/app
     #   - ./config.yaml:/app/config.yaml
     #   - ./my_session.session:/app/my_session.session
+    networks:
+      data-net:
 
 volumes:
   db_data:
