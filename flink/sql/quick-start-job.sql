@@ -3,8 +3,8 @@ set 'execution.checkpointing.interval'
 = '3s'
 ;
 
-show databases
-;
+-- show databases
+-- ;
 
 -- 2. Create Table
 create table messages (
@@ -62,5 +62,5 @@ create table if not exists iceberg.dl.messages (
 insert into iceberg.dl.messages
 select * from messages;
 
--- 5. Select Table
-select * from iceberg.dl.messages;
+-- -- 5. Select Table
+-- select * from iceberg.dl.messages;
