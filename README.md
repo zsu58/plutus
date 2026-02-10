@@ -67,7 +67,6 @@ docker-compose -f docker-compose.flink.yml up
 
 * Flink UI: http://localhost:8081/#/overview
 * MySQL: http://localhost:3306
-* Python App: http://localhost:8000
 * Minio: http://localhost:9000
 
 
@@ -92,6 +91,10 @@ GRANT SELECT, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'p
 FLUSH PRIVILEGES;
 ```
 
+MINIO
+* Create bucket(data-bucket) after login to MinIO console
+
+
 Flink
 
 ```bash
@@ -101,7 +104,6 @@ docker container exec -it jobmanager bash
 ```
 
 ```sql
-
 --- ---------------------
 -- Select Data from MySQL
 --- ---------------------

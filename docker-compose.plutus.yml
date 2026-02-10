@@ -7,6 +7,7 @@ services:
     # - binlog-row-image=FULL: Logs all columns (safest for Flink)
     # - gtid-mode=ON: Recommended for modern replication/CDC
     # - binlog-expire-logs-seconds=172800: Expire binlog files after 2 day
+    # - log-slave-updates = 1, needed to enable slave instance to also write the data that synchronized from master to its binlog
     command: >
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
