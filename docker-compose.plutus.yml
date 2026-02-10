@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   db:
     image: mysql:8.0
@@ -8,6 +6,7 @@ services:
     # CDC Configuration:
     # - binlog-row-image=FULL: Logs all columns (safest for Flink)
     # - gtid-mode=ON: Recommended for modern replication/CDC
+    # - binlog-expire-logs-seconds=172800: Expire binlog files after 2 day
     command: >
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
@@ -17,6 +16,7 @@ services:
       --binlog-row-image=FULL
       --gtid-mode=ON
       --enforce-gtid-consistency=ON
+      --binlog-expire-logs-seconds=172800
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: plutus
