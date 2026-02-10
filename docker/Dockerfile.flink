@@ -6,11 +6,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # 2) Copy pom.xml from project root
-COPY pom.xml /tmp/pom.xml
+COPY ./flink/pom.xml /opt/flink/pom.xml
 
 # 3) Use Maven to download all dependencies directly to Flink's lib folder
 # -f points to the file we just copied, -DoutputDirectory tells Maven where to put the jars
-RUN mvn -f /tmp/pom.xml dependency:copy-dependencies -DoutputDirectory=/opt/flink/lib/
+RUN mvn -f /opt/flink/pom.xml dependency:copy-dependencies -DoutputDirectory=/opt/flink/lib/
 
 # Set proper ownership
 RUN chown flink:flink /opt/flink/lib/*.jar
