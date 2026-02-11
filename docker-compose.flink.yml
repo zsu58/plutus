@@ -1,18 +1,23 @@
-version: "3"
+x-flink-common:
+  &flink-common
+  image: flink
+  environment:
+    - HADOOP_CONF_DIR=/opt/flink/conf
+    - |
+      FLINK_PROPERTIES=
+      jobmanager.rpc.address: jobmanager
+      metrics.reporters: prom
+      metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
+      metrics.reporter.prom.port: 9091
+      fs.allowed-fallback-filesystems: s3;s3a
+  networks:
+    - data-net
 
 services:
   jobmanager:
     # build: .
-    image: flink
+    <<: *flink-common
     container_name: jobmanager
-    environment:
-      - HADOOP_CONF_DIR=/opt/flink/conf
-      - |
-        FLINK_PROPERTIES=
-        jobmanager.rpc.address: jobmanager
-        metrics.reporters: prom
-        metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
-        metrics.reporter.prom.port: 9091
     ports:
       - "8081:8081"
     command: jobmanager
@@ -23,19 +28,9 @@ services:
       - ./flink/target:/opt/flink/target
       # - ./flink/pom.xml:/opt/flink/pom.xml
       - ./flink/conf/core-site.xml:/opt/flink/conf/core-site.xml
-    networks:
-      - data-net
   taskmanager:
     # build: .
-    image: flink
-    environment:
-      - HADOOP_CONF_DIR=/opt/flink/conf
-      - |
-        FLINK_PROPERTIES=
-        jobmanager.rpc.address: jobmanager
-        metrics.reporters: prom
-        metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
-        metrics.reporter.prom.port: 9091
+    <<: *flink-common
     depends_on:
       - jobmanager
     command: taskmanager
@@ -43,8 +38,6 @@ services:
           replicas: 2
     volumes:
       - ./flink/conf/core-site.xml:/opt/flink/conf/core-site.xml
-    networks:
-      - data-net
 
 networks:
   data-net:

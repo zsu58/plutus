@@ -1,6 +1,6 @@
 import org.apache.flink.table.api.*;
 
-public class MySQL2IcebergInitTest {
+public class MySQL2IcebergInit {
     public static void main(String[] args) {
         // 1. Capture arguments
         // String targetRegion = args[0];
@@ -62,6 +62,11 @@ public class MySQL2IcebergInitTest {
 
         // 7. Execute the Insert (Streaming Job)
         tEnv.executeSql("insert into iceberg.dl.messages select * from messages");
+
+
+        // 8. Stop the job with savepoint (triggered outside of the job)
+        // flink stop -p --savepointPath s3a://flink-bucket/savepoints/dl/messages {{ job_id }}
+
         /*
 
         // 1. Capture arguments from Airflow
