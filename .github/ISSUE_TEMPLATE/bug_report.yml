@@ -32,12 +32,13 @@ body:
     attributes:
       label: Component
       description: Which part of the system is affected?
+      multiple: true
       options:
+        - Infrastructure(e.g. Docker)
+        - App
         - Flink
+        - MiniO(Object Storage))
         - Airflow
-        - Docker / Infrastructure
-        - Python App
-        - Iceberg / S3
     validations:
       required: true
 
