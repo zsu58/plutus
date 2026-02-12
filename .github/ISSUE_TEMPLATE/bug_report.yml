@@ -26,8 +26,6 @@ body:
         1. Run 'docker-compose up'
         2. Submit job '...'
         3. See error...
-    validations:
-      required: true
 
   - type: dropdown
     id: component
