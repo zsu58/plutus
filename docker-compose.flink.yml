@@ -10,6 +10,7 @@ x-flink-common:
       metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
       metrics.reporter.prom.port: 9091
       fs.allowed-fallback-filesystems: s3;s3a
+      classloader.parent-first-patterns.additional: org.apache.hadoop;com.amazonaws;org.apache.http
   networks:
     - data-net
 
