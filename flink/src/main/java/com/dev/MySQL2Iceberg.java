@@ -1,6 +1,6 @@
 import org.apache.flink.table.api.*;
 
-public class MySQL2IcebergInit {
+public class MySQL2Iceberg {
     public static void main(String[] args) {
         // 1. Capture arguments
         // String targetRegion = args[0];
