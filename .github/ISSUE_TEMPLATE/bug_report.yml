@@ -1,0 +1,58 @@
+name: 🐛 Bug Report
+description: Create a report to help us improve Plutus
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Summary
+      description: A clear and concise description of what the bug is.
+      placeholder: Flink job fails with ClassLoader error when using S3...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to make the bug happen.
+      placeholder: |
+        1. Run 'docker-compose up'
+        2. Submit job '...'
+        3. See error...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which part of the system is affected?
+      options:
+        - Flink
+        - Airflow
+        - Docker / Infrastructure
+        - Python App
+        - Iceberg / S3
+    validations:
+      required: true
+
+  # - type: input
+  #   id: environment
+  #   attributes:
+  #     label: Environment Details
+  #     description: OS, Java version, Flink version, etc.
+  #     placeholder: macOS 14, Java 17, Flink 1.20.3
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Please copy and paste any relevant log output.
+      render: shell

@@ -21,8 +21,6 @@ async def message_handler(event):
     # Save to DB
     save_message(chat, chat_title, sender, username, event.text)
 
-    #
-
 
 def save_message(chat, chat_title, sender, username, text):
     db = database.SessionLocal()
