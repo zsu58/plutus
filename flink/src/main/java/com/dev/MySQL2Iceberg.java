@@ -64,7 +64,7 @@ public class MySQL2Iceberg {
         tEnv.executeSql("""
             insert into iceberg.dl.messages
             select * from messages
-        """;);
+        """);
 
 
         // 8. Stop the job with savepoint (triggered outside of the job)
