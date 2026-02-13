@@ -11,24 +11,26 @@ flink/
 ├── src/
 │   └── main/
 │       └── java/
-│           └── *.java  # Your Flink Job code
-└── jobs/                   # (Optional) SQL scripts or output JARs
+│           └── com/
+│               └── dev/
+│                   └── *.java  # Flink Job code
+└── target/                   # Output JARs
 ```
 
-<!-- ## 3. Code Formatting (Spotless)
+## 3. Code Formatting (Spotless)
 We use **Spotless** to enforce Google Java Style.
-
-**Check formatting:**
-```bash
-mvn spotless:check
-```
 
 **Auto-fix formatting:**
 ```bash
 mvn spotless:apply
 ```
 
-> **Note:** Run `mvn spotless:apply` before pushing code to avoid CI failures. -->
+**Check formatting:**
+```bash
+mvn spotless:check
+```
+
+> **Note:** Run `mvn spotless:apply` before pushing code to avoid CI failures.
 
 ## 4. Building the JAR
 To compile your Java code and create a Flink Job JAR:

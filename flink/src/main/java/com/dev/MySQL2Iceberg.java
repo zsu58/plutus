@@ -1,26 +1,27 @@
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.*;
 
-
 public class MySQL2Iceberg {
-    public static void main(String[] args) {
-        // 1. Capture arguments
-        // String targetRegion = args[0];
-        // String startTime = args[1];
+  public static void main(String[] args) {
+    // 1. Capture arguments
+    // String targetRegion = args[0];
+    // String startTime = args[1];
 
-        // 2. Initialize the environment
-        EnvironmentSettings settings = EnvironmentSettings.newInstance().inStreamingMode().build();
-        TableEnvironment tEnv = (TableEnvironment.create(settings));
+    // 2. Initialize the environment
+    EnvironmentSettings settings = EnvironmentSettings.newInstance().inStreamingMode().build();
+    TableEnvironment tEnv = (TableEnvironment.create(settings));
 
-        // 3. Enable Checkpointing (Critical for Iceberg)
-        Configuration config = tEnv.getConfig().getConfiguration();
-        config.setString("execution.checkpointing.interval", "10s");
-        // config.setString("execution.checkpointing.mode", "EXACTLY_ONCE"); default
-        config.setString("execution.checkpointing.dir", "s3a://flink-bucket/checkpoints/dl/messages");
-        config.setString("execution.checkpointing.externalized-checkpoint-retention", "RETAIN_ON_CANCELLATION");
+    // 3. Enable Checkpointing (Critical for Iceberg)
+    Configuration config = tEnv.getConfig().getConfiguration();
+    config.setString("execution.checkpointing.interval", "10s");
+    // config.setString("execution.checkpointing.mode", "EXACTLY_ONCE"); default
+    config.setString("execution.checkpointing.dir", "s3a://flink-bucket/checkpoints/dl/messages");
+    config.setString(
+        "execution.checkpointing.externalized-checkpoint-retention", "RETAIN_ON_CANCELLATION");
 
-        // 4. Define MySQL CDC Source
-        tEnv.executeSql("""
+    // 4. Define MySQL CDC Source
+    tEnv.executeSql(
+        """
             create table messages (
                 id int,
                 chat_id int,
@@ -42,8 +43,9 @@ public class MySQL2Iceberg {
             )
         """);
 
-        // 5. Create Iceberg Catalog
-        tEnv.executeSql("""
+    // 5. Create Iceberg Catalog
+    tEnv.executeSql(
+        """
             create catalog iceberg with (
                 'type' = 'iceberg',
                 'catalog-type' = 'hadoop',
@@ -51,9 +53,10 @@ public class MySQL2Iceberg {
             )
         """);
 
-        // 6. Create Database and Table in Iceberg (if not exists)
-        tEnv.executeSql("create database if not exists iceberg.dl");
-        tEnv.executeSql("""
+    // 6. Create Database and Table in Iceberg (if not exists)
+    tEnv.executeSql("create database if not exists iceberg.dl");
+    tEnv.executeSql(
+        """
             create table if not exists iceberg.dl.messages (
                 id int,
                 chat_id int,
@@ -68,17 +71,17 @@ public class MySQL2Iceberg {
             )
         """);
 
-        // 7. Execute the Insert (Streaming Job)
-        tEnv.executeSql("""
+    // 7. Execute the Insert (Streaming Job)
+    tEnv.executeSql(
+        """
             insert into iceberg.dl.messages /*+ options('upsert-enabled'='true') */ -- default
             select * from messages
         """);
 
+    // 8. Stop the job with savepoint (triggered outside of the job)
+    // flink stop -p --savepointPath s3a://flink-bucket/savepoints/dl/messages {{ job_id }}
 
-        // 8. Stop the job with savepoint (triggered outside of the job)
-        // flink stop -p --savepointPath s3a://flink-bucket/savepoints/dl/messages {{ job_id }}
-
-        /*
+    /*
         // Example of Performing Join and using Hive UDF
 
         Table source = tEnv.from("messages");
@@ -98,5 +101,5 @@ public class MySQL2Iceberg {
         // 6. Execute the insert
         result.executeInsert("iceberg_sink");
     */
-    }
+  }
 }
