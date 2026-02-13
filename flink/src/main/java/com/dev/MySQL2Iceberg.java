@@ -61,7 +61,10 @@ public class MySQL2Iceberg {
         """);
 
         // 7. Execute the Insert (Streaming Job)
-        tEnv.executeSql("insert into iceberg.dl.messages select * from messages");
+        tEnv.executeSql("""
+            insert into iceberg.dl.messages
+            select * from messages
+        """;);
 
 
         // 8. Stop the job with savepoint (triggered outside of the job)

@@ -48,12 +48,12 @@ You can submit the JAR to your Flink cluster:
 flink run -c MySQL2Iceberg target/flink-s3-iceberg-cdc-1.0.jar
 ```
 
-## 6. Stoping and Restarting the Job
+## 6. Stoping and Restarting the Job (Savepoint)
 
 ```bash
 # stop, TODO: need to add datetime
 flink stop --type canonical --savepointPath s3a://flink-bucket/savepoints/dl/messages/ {job_id}
 
 # restart, TODO: need to add datetime
-flink run -s s3a://flink-bucket/savepoints/dl/messages/savepoint-{id} -c MySQL2IcebergInitTest target/flink-s3-iceberg-cdc-1.0.jar
+flink run -s s3a://flink-bucket/savepoints/dl/messages/savepoint-{id} -c MySQL2Iceberg target/flink-s3-iceberg-cdc-1.0.jar
 ```
