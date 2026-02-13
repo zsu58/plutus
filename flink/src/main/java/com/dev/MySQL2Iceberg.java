@@ -1,4 +1,6 @@
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.*;
+
 
 public class MySQL2Iceberg {
     public static void main(String[] args) {
@@ -11,7 +13,11 @@ public class MySQL2Iceberg {
         TableEnvironment tEnv = (TableEnvironment.create(settings));
 
         // 3. Enable Checkpointing (Critical for Iceberg)
-        tEnv.getConfig().getConfiguration().setString("execution.checkpointing.interval", "10s");
+        Configuration config = tEnv.getConfig().getConfiguration();
+        config.setString("execution.checkpointing.interval", "10s");
+        // config.setString("execution.checkpointing.mode", "EXACTLY_ONCE"); default
+        config.setString("execution.checkpointing.dir", "s3a://flink-bucket/checkpoints/dl/messages");
+        config.setString("execution.checkpointing.externalized-checkpoint-retention", "RETAIN_ON_CANCELLATION");
 
         // 4. Define MySQL CDC Source
         tEnv.executeSql("""
@@ -57,12 +63,14 @@ public class MySQL2Iceberg {
                 text string,
                 `timestamp` timestamp(0),
                 primary key (id) not enforced
+            ) with (
+                'format-version'='2' -- default
             )
         """);
 
         // 7. Execute the Insert (Streaming Job)
         tEnv.executeSql("""
-            insert into iceberg.dl.messages
+            insert into iceberg.dl.messages /*+ options('upsert-enabled'='true') */ -- default
             select * from messages
         """);
 
@@ -71,27 +79,13 @@ public class MySQL2Iceberg {
         // flink stop -p --savepointPath s3a://flink-bucket/savepoints/dl/messages {{ job_id }}
 
         /*
-
-        // 1. Capture arguments from Airflow
-        String targetRegion = args[0];
-        String startTime = args[1];
-
-        // 2. Initialize the environment
-        EnvironmentSettings settings = EnvironmentSettings.newInstance().inStreamingMode().build();
-        TableEnvironment tEnv = TableEnvironment.create(settings);
-
-        // 3. Register Hive Catalog (for Hive UDFs and Dimension tables)
-        tEnv.executeSql("CREATE CATALOG my_hive WITH ('type'='hive', 'hive-conf-dir'='/opt/flink/conf')");
-        tEnv.useCatalog("my_hive");
-        // 4. Define Source & Sink (same DDL syntax as SQL API)
-        tEnv.executeSql("CREATE TABLE mysql_source (...) WITH ('connector'='mysql-cdc', ...)");
-        tEnv.executeSql("CREATE TABLE iceberg_sink (...) WITH ('connector'='iceberg', ...)");
-
-        /// 5. Build the transformation programmatically
-        Table orders = tEnv.from("mysql_source");
-        Table users = tEnv.from("hive_users");
         // Example of Performing Join and using Hive UDF
-        Table result = orders
+
+        Table source = tEnv.from("messages");
+        Table source = tEnv.from("users"); // just for example
+        Table sink = tEnv.from("iceberg.dl.messages");
+
+        Table result = source
             .join(users).where($("customer_id").isEqual($("id")))
             .filter($("order_date").isGreaterOrEqual(startTime))
             .select(

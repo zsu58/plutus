@@ -57,3 +57,8 @@ flink stop --type canonical --savepointPath s3a://flink-bucket/savepoints/dl/mes
 # restart, TODO: need to add datetime
 flink run -s s3a://flink-bucket/savepoints/dl/messages/savepoint-{id} -c MySQL2Iceberg target/flink-s3-iceberg-cdc-1.0.jar
 ```
+
+## 7. Restarting the Job (Checkpoint)
+```bash
+flink run -s s3a://flink-bucket/checkpoints/dl/messages/{job_id}/chk-{id} -c MySQL2Iceberg target/flink-s3-iceberg-cdc-1.0.jar
+```
