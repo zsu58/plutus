@@ -1,11 +1,18 @@
-* JAVA format
+# TODOs
+
+## Must
 * Airflow
-* k8s
-* maven -> gradle
 * Big data (parallel processing)
-* when to use specific-offset?
-    * when the Flink State (Checkpoints/Savepoints) becomes corrupted or is accidentally deleted from your storage
-    * reprocessing the data due to logic change/bug
-    * initialization of the data is done using different framework(e.g. spark)
 * Compaction
-* Paimon
+* Flink Resource Management/Configuration
+* Test mini-batch processing for performance of UDFS
+* K8S
+* Catalog
+* When to use specific-offset?
+    * When the Flink State (Checkpoints/Savepoints) becomes corrupted or is accidentally deleted from your storage
+    * Reprocessing the data due to logic change/bug
+    * Initialization of the data is done using different framework(e.g. spark)
+
+## Optional
+* Paimon?
+* Kafka (as buffer??)
