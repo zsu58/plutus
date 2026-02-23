@@ -2,6 +2,7 @@
 
 ## Must
 * Airflow
+* Parameterize
 * Big data (parallel processing)
 * Compaction
 * Flink Resource Management/Configuration
