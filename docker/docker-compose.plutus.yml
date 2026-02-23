@@ -46,15 +46,15 @@ services:
         condition: service_healthy
     # Pass environment variables from your local .env file
     env_file:
-      - .env
+      - ../.env
     # Override DB_HOST to point to the container name 'db' instead of 'localhost'
     environment:
       - DB_HOST=db
     # Mount config.yaml so you can edit it without rebuilding
     volumes:
-      - .:/app
-    #   - ./config.yaml:/app/config.yaml
-    #   - ./my_session.session:/app/my_session.session
+      - ..:/app
+    #   - ../config.yaml:/app/config.yaml
+    #   - ../my_session.session:/app/my_session.session
     networks:
       data-net:
 

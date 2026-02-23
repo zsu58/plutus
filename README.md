@@ -54,15 +54,15 @@ python3 -m plutus.main --init
 ```
 
 ```bash
-docker-compose -f docker-compose.plutus.yml up
+docker-compose -f docker/docker-compose.plutus.yml up
 
 # not working
-# docker-compose -f docker-compose.ceph.yml up
+# docker-compose -f docker/docker-compose.ceph.yml up
 
-docker-compose -f docker-compose.minio-alone.yml up
+docker-compose -f docker/docker-compose.minio-alone.yml up
 # create a bucket http://localhost:9000
 
-docker-compose -f docker-compose.flink.yml up
+docker-compose -f docker/docker-compose.flink.yml up
 ```
 
 * Flink UI: http://localhost:8081/#/overview

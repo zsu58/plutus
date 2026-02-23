@@ -24,12 +24,12 @@ services:
       - "8081:8081"
     command: jobmanager
     volumes:
-      # - ./flink/jobs:/opt/flink/jobs
-      # - ./flink/src:/opt/flink/src
-      - ./flink/sql:/opt/flink/sql
-      - ./flink/target:/opt/flink/target
-      # - ./flink/pom.xml:/opt/flink/pom.xml
-      - ./flink/conf/core-site.xml:/opt/flink/conf/core-site.xml
+      # - ../flink/jobs:/opt/flink/jobs
+      # - ../flink/src:/opt/flink/src
+      - ../flink/sql:/opt/flink/sql
+      - ../flink/target:/opt/flink/target
+      # - ../flink/pom.xml:/opt/flink/pom.xml
+      - ../flink/conf/core-site.xml:/opt/flink/conf/core-site.xml
   taskmanager:
     # build: .
     <<: *flink-common
@@ -39,7 +39,7 @@ services:
     deploy:
           replicas: 2
     volumes:
-      - ./flink/conf/core-site.xml:/opt/flink/conf/core-site.xml
+      - ../flink/conf/core-site.xml:/opt/flink/conf/core-site.xml
 
 networks:
   data-net:
