@@ -179,3 +179,8 @@ config.yaml
 
 # ceph
 # ceph_data/
+
+# airflow
+airflow/logs/
+airflow/config/
+airflow/plugins/
